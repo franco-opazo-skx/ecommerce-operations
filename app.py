@@ -1,5 +1,211 @@
 import streamlit as st
 import pandas as pd
+import streamlit as st
+import pandas as pd
+from pathlib import Path
+from engine_descuentos import calcular_descuentos, dataframe_to_excel_bytes
+
+# =========================================
+# CONFIG
+# =========================================
+
+st.set_page_config(
+    page_title="Skechers Ecommerce Operations",
+    page_icon="👟",
+    layout="wide"
+)
+
+# =========================================
+# CSS CORPORATIVO
+# =========================================
+
+st.markdown("""
+<style>
+
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+
+.block-container{
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+[data-testid="stSidebar"]{
+    background: #0F172A;
+}
+
+[data-testid="stSidebar"] *{
+    color: white;
+}
+
+.skechers-title{
+    font-size: 42px;
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 0;
+}
+
+.skechers-sub{
+    color: #6B7280;
+    font-size: 15px;
+    margin-top: -10px;
+}
+
+.metric-card{
+    background: white;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border: 1px solid #E5E7EB;
+}
+
+.metric-title{
+    color: #6B7280;
+    font-size: 14px;
+}
+
+.metric-value{
+    font-size: 34px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.section-title{
+    font-size: 32px;
+    font-weight: 700;
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+.stButton>button{
+    background-color: #EF4444;
+    color: white;
+    border-radius: 12px;
+    border: none;
+    padding: 12px 22px;
+    font-weight: 600;
+}
+
+.stButton>button:hover{
+    background-color: #DC2626;
+    color: white;
+}
+
+hr{
+    margin-top: 35px;
+    margin-bottom: 35px;
+}
+
+.logo-wrap{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    margin-bottom:20px;
+}
+
+.logo-wrap img{
+    width:220px;
+}
+
+.small-status{
+    font-size:12px;
+    color:#6B7280;
+    margin-top:5px;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+# =========================================
+# PATHS
+# =========================================
+
+DATA_DIR = Path("data")
+
+FILES = {
+    "Listado Prod. 1P": DATA_DIR / "Listado Prod. 1P.xlsx",
+    "Descuentos Retail": DATA_DIR / "Descuentos Retail.xlsx",
+    "Tech Sports": DATA_DIR / "Tech Sports.xlsx",
+    "Compras Retail-Ecomm-BTS": DATA_DIR / "Compras Retail-Ecomm-BTS.xlsx",
+    "Disponible": DATA_DIR / "Disponible.xlsx",
+}
+
+# =========================================
+# SIDEBAR
+# =========================================
+
+with st.sidebar:
+
+    st.markdown("""
+    <div style='margin-top:20px;margin-bottom:30px'>
+        <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Skechers_logo.svg/512px-Skechers_logo.svg.png' width='180'>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("### Ecommerce Operations")
+
+    st.markdown("---")
+
+    st.success("Cálculo Descuentos Ecommerce")
+
+# =========================================
+# HEADER
+# =========================================
+
+st.markdown("""
+<div class='logo-wrap'>
+    <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Skechers_logo.svg/512px-Skechers_logo.svg.png'>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<div class='skechers-title'>
+Plataforma Ecommerce Operations
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<div class='skechers-sub'>
+Skechers Chile · Discount Engine Platform
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+# =========================================
+# CARDS
+# =========================================
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.markdown("""
+    <div class='metric-card'>
+        <div class='metric-title'>Estado</div>
+        <div class='metric-value'>Online</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col2:
+    st.markdown("""
+    <div class='metric-card'>
+        <div class='metric-title'>Motor</div>
+        <div class='metric-value'>Python</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col3:
+    st.markdown("""
+    <div class='metric-card'>
+        <div class='metric-title'>Deployment</div>
+        <div class='metric-value'>Streamlit Cloud</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+st.markdown("<hr>", unsafe_allow_html=True)
 from pathlib import Path
 
 from engine_descuentos import calcular_descuentos, dataframe_to_excel_bytes
