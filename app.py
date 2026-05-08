@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 from pathlib import Path
 
+from engine_descuentos import calcular_descuentos, dataframe_to_excel_bytes
+
 st.set_page_config(page_title="Descuentos Ecommerce", page_icon="🔥", layout="wide")
 
 DATA_DIR = Path("data")
@@ -33,7 +35,6 @@ def load_tech_options(path):
     df["Season Actual"] = df["Season Actual"].map(norm)
 
     detalles = sorted([v for v in df["Detalle"].unique() if v and v != "-"])
-
     apto_df = df[df["Detalle"].str.upper() == "APTO PARA DSCTO"]
     seasons_apto = sorted([v for v in apto_df["Season Actual"].unique() if v and v != "-"])
 
@@ -78,7 +79,7 @@ st.caption("From: Franco Opazo")
 st.header("Cálculo de Descuentos Ecommerce")
 
 col1, col2, col3 = st.columns(3)
-col1.metric("Estado", "En desarrollo")
+col1.metric("Estado", "Operativo")
 col2.metric("Motor", "Python + Streamlit")
 col3.metric("Output", "Excel")
 
@@ -151,6 +152,11 @@ tab_1p, tab_tech, tab_compras = st.tabs([
     "Compras Retail-Ecomm-BTS",
 ])
 
+config_1p = pd.DataFrame()
+config_tech = pd.DataFrame()
+config_tech_season = pd.DataFrame()
+config_compras = pd.DataFrame()
+
 with tab_1p:
     st.write("#### Configuración 1P")
 
@@ -204,6 +210,7 @@ with tab_tech:
             )
         else:
             st.info("Activa 'Permite descuento' en APTO PARA DSCTO para configurar % por Season.")
+            config_tech_season = pd.DataFrame(columns=["Season Actual", "%"])
     else:
         st.error("No se encontró Tech Sports.")
 
@@ -232,11 +239,36 @@ st.divider()
 st.subheader("4. Ejecutar cálculo")
 
 if st.button("Ejecutar cálculo", type="primary"):
-    if df_style is None:
+    if archivo is None:
         st.error("Primero debes cargar el archivo Style-Color.")
     else:
-        st.success("Siguiente paso: conectar esta configuración al motor real.")
-        st.write("Prioridad actual:")
-        st.write(st.session_state.prioridades)
+        try:
+            with st.spinner("Procesando cálculo de descuentos..."):
+                output_df = calcular_descuentos(
+                    style_file=archivo,
+                    files=FILES,
+                    prioridades=st.session_state.prioridades,
+                    config_1p_df=config_1p,
+                    config_tech_df=config_tech,
+                    config_tech_season_df=config_tech_season,
+                    config_compras_df=config_compras,
+                )
+
+                excel_bytes = dataframe_to_excel_bytes(output_df)
+
+            st.success("✅ Cálculo terminado correctamente.")
+
+            st.write("#### Vista previa output")
+            st.dataframe(output_df.head(50), use_container_width=True)
+
+            st.download_button(
+                label="📥 Descargar output_descuentos_ecommerce.xlsx",
+                data=excel_bytes,
+                file_name="output_descuentos_ecommerce.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+
+        except Exception as e:
+            st.error(f"Error ejecutando cálculo: {e}")
 
 st.caption("Plataforma Ecommerce Operations · Franco Opazo")
