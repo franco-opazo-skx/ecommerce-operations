@@ -1,7 +1,5 @@
 import streamlit as st
 import pandas as pd
-import streamlit as st
-import pandas as pd
 from pathlib import Path
 from engine_descuentos import calcular_descuentos, dataframe_to_excel_bytes
 
@@ -16,104 +14,87 @@ st.set_page_config(
 )
 
 # =========================================
-# CSS CORPORATIVO
+# CSS / DISEÑO
 # =========================================
 
 st.markdown("""
 <style>
-
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
-header {visibility: hidden;}
 
 .block-container{
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
+    padding-top: 1.2rem;
+    padding-left: 1.8rem;
+    padding-right: 1.8rem;
+    max-width: 1300px;
 }
 
 [data-testid="stSidebar"]{
-    background: #0F172A;
+    background: #071527;
 }
 
 [data-testid="stSidebar"] *{
     color: white;
 }
 
-.skechers-title{
-    font-size: 42px;
-    font-weight: 800;
-    color: #111827;
-    margin-bottom: 0;
+.main-header{
+    background: linear-gradient(90deg, #071527 0%, #0B2B4C 100%);
+    padding: 22px 28px;
+    border-radius: 16px;
+    margin-bottom: 22px;
 }
 
-.skechers-sub{
-    color: #6B7280;
-    font-size: 15px;
-    margin-top: -10px;
+.brand{
+    color: white;
+    font-size: 34px;
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+
+.brand-sub{
+    color: #D1D5DB;
+    font-size: 14px;
 }
 
 .metric-card{
-    background: white;
-    border-radius: 16px;
-    padding: 22px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    background: #FFFFFF;
     border: 1px solid #E5E7EB;
+    border-radius: 14px;
+    padding: 16px 18px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.04);
 }
 
 .metric-title{
     color: #6B7280;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .metric-value{
-    font-size: 34px;
+    color: #071527;
+    font-size: 24px;
     font-weight: 700;
-    color: #111827;
 }
 
-.section-title{
-    font-size: 32px;
-    font-weight: 700;
-    margin-top: 30px;
-    margin-bottom: 15px;
+h1, h2, h3{
+    color: #071527;
 }
 
 .stButton>button{
-    background-color: #EF4444;
+    background-color: #0B2B4C;
     color: white;
-    border-radius: 12px;
+    border-radius: 10px;
     border: none;
-    padding: 12px 22px;
     font-weight: 600;
 }
 
 .stButton>button:hover{
-    background-color: #DC2626;
+    background-color: #123E6B;
     color: white;
 }
 
-hr{
-    margin-top: 35px;
-    margin-bottom: 35px;
-}
-
-.logo-wrap{
-    display:flex;
-    align-items:center;
-    gap:20px;
-    margin-bottom:20px;
-}
-
-.logo-wrap img{
-    width:220px;
-}
-
-.small-status{
-    font-size:12px;
-    color:#6B7280;
-    margin-top:5px;
+[data-testid="stFileUploader"]{
+    background: #F8FAFC;
+    border-radius: 12px;
 }
 
 </style>
@@ -134,117 +115,39 @@ FILES = {
 }
 
 # =========================================
-# SIDEBAR
+# FUNCIONES AUXILIARES
 # =========================================
-
-with st.sidebar:
-
-    st.markdown("""
-    <div style='margin-top:20px;margin-bottom:30px'>
-        <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Skechers_logo.svg/512px-Skechers_logo.svg.png' width='180'>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("### Ecommerce Operations")
-
-    st.markdown("---")
-
-    st.success("Cálculo Descuentos Ecommerce")
-
-# =========================================
-# HEADER
-# =========================================
-
-st.markdown("""
-<div class='logo-wrap'>
-    <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Skechers_logo.svg/512px-Skechers_logo.svg.png'>
-</div>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-<div class='skechers-title'>
-Plataforma Ecommerce Operations
-</div>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-<div class='skechers-sub'>
-Skechers Chile · Discount Engine Platform
-</div>
-""", unsafe_allow_html=True)
-
-st.markdown("<br>", unsafe_allow_html=True)
-
-# =========================================
-# CARDS
-# =========================================
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    st.markdown("""
-    <div class='metric-card'>
-        <div class='metric-title'>Estado</div>
-        <div class='metric-value'>Online</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col2:
-    st.markdown("""
-    <div class='metric-card'>
-        <div class='metric-title'>Motor</div>
-        <div class='metric-value'>Python</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col3:
-    st.markdown("""
-    <div class='metric-card'>
-        <div class='metric-title'>Deployment</div>
-        <div class='metric-value'>Streamlit Cloud</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-st.markdown("<hr>", unsafe_allow_html=True)
-from pathlib import Path
-
-from engine_descuentos import calcular_descuentos, dataframe_to_excel_bytes
-
-st.set_page_config(page_title="Descuentos Ecommerce", page_icon="🔥", layout="wide")
-
-DATA_DIR = Path("data")
-
-FILES = {
-    "Listado Prod. 1P": DATA_DIR / "Listado Prod. 1P.xlsx",
-    "Descuentos Retail": DATA_DIR / "Descuentos Retail.xlsx",
-    "Tech Sports": DATA_DIR / "Tech Sports.xlsx",
-    "Compras Retail-Ecomm-BTS": DATA_DIR / "Compras Retail-Ecomm-BTS.xlsx",
-    "Disponible": DATA_DIR / "Disponible.xlsx",
-}
 
 def norm(v):
     if pd.isna(v):
         return ""
     return str(v).strip()
 
+
 def load_1p_options(path):
     df = pd.read_excel(path, header=0, usecols="D:H")
     vals = set()
+
     for col in df.columns:
         vals.update(df[col].dropna().astype(str).str.strip())
+
     return sorted([v for v in vals if v and v != "-"])
+
 
 def load_tech_options(path):
     df = pd.read_excel(path, header=0, usecols="A,I,K")
     df.columns = ["StyleColor", "Season Actual", "Detalle"]
+
     df["Detalle"] = df["Detalle"].map(norm)
     df["Season Actual"] = df["Season Actual"].map(norm)
 
     detalles = sorted([v for v in df["Detalle"].unique() if v and v != "-"])
+
     apto_df = df[df["Detalle"].str.upper() == "APTO PARA DSCTO"]
     seasons_apto = sorted([v for v in apto_df["Season Actual"].unique() if v and v != "-"])
 
     return detalles, seasons_apto
+
 
 def load_compras_options(path):
     df = pd.read_excel(path, header=0, usecols="B,M:Y")
@@ -264,32 +167,71 @@ def load_compras_options(path):
     }
 
     encontrados = []
+
     for grupo, cols in grupos.items():
         for c in cols:
             serie = df[c].fillna("-").astype(str).str.strip()
+
             if (serie != "-").any():
                 encontrados.append(grupo)
                 break
 
     return encontrados
 
-st.sidebar.title("Skechers")
-st.sidebar.caption("Ecommerce Operations")
-st.sidebar.divider()
-st.sidebar.success("Cálculo Descuentos Ecommerce")
-st.sidebar.divider()
-st.sidebar.caption("From: Franco Opazo")
+# =========================================
+# SIDEBAR
+# =========================================
 
-st.title("🔥 Plataforma Ecommerce Operations")
-st.caption("From: Franco Opazo")
-st.header("Cálculo de Descuentos Ecommerce")
+with st.sidebar:
+    st.markdown("## SKECHERS")
+    st.caption("Ecommerce Operations")
+    st.divider()
+    st.success("Cálculo Descuentos Ecommerce")
+    st.divider()
+    st.caption("From: Franco Opazo")
+
+# =========================================
+# HEADER
+# =========================================
+
+st.markdown("""
+<div class="main-header">
+    <div class="brand">SKECHERS · Ecommerce Operations</div>
+    <div class="brand-sub">Discount Engine Platform · From Franco Opazo</div>
+</div>
+""", unsafe_allow_html=True)
 
 col1, col2, col3 = st.columns(3)
-col1.metric("Estado", "Operativo")
-col2.metric("Motor", "Python + Streamlit")
-col3.metric("Output", "Excel")
+
+with col1:
+    st.markdown("""
+    <div class="metric-card">
+        <div class="metric-title">Estado</div>
+        <div class="metric-value">Online</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col2:
+    st.markdown("""
+    <div class="metric-card">
+        <div class="metric-title">Motor</div>
+        <div class="metric-value">Python</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col3:
+    st.markdown("""
+    <div class="metric-card">
+        <div class="metric-title">Output</div>
+        <div class="metric-value">Excel</div>
+    </div>
+    """, unsafe_allow_html=True)
 
 st.divider()
+
+# =========================================
+# ESTADO ARCHIVOS
+# =========================================
 
 with st.expander("Estado de conexión archivos internos", expanded=False):
     for name, path in FILES.items():
@@ -299,6 +241,10 @@ with st.expander("Estado de conexión archivos internos", expanded=False):
             st.error(f"{name}: No encontrado → {path}")
 
 st.divider()
+
+# =========================================
+# 1. CARGAR ARCHIVO
+# =========================================
 
 st.subheader("1. Cargar archivo Style-Color")
 
@@ -313,7 +259,12 @@ if archivo:
 
 st.divider()
 
+# =========================================
+# 2. PRIORIDAD
+# =========================================
+
 st.subheader("2. Prioridad de reglas")
+st.caption("Define el orden de evaluación. La primera regla que aplique define el resultado.")
 
 reglas_base = [
     "Descuento Retail",
@@ -350,6 +301,10 @@ if st.button("Restablecer orden"):
 
 st.divider()
 
+# =========================================
+# 3. CONFIG DINÁMICA
+# =========================================
+
 st.subheader("3. Configuración dinámica de reglas")
 
 tab_1p, tab_tech, tab_compras = st.tabs([
@@ -375,7 +330,11 @@ with tab_1p:
             "%": [0.0] * len(vals_1p),
         })
 
-        config_1p = st.data_editor(df_1p, use_container_width=True, key="config_1p")
+        config_1p = st.data_editor(
+            df_1p,
+            use_container_width=True,
+            key="config_1p"
+        )
     else:
         st.error("No se encontró Listado Prod. 1P.")
 
@@ -391,7 +350,11 @@ with tab_tech:
             "%": [0.0] * len(detalles),
         })
 
-        config_tech = st.data_editor(df_tech, use_container_width=True, key="config_tech")
+        config_tech = st.data_editor(
+            df_tech,
+            use_container_width=True,
+            key="config_tech"
+        )
 
         apto_row = config_tech[
             config_tech["Valor detectado"].astype(str).str.upper().str.strip() == "APTO PARA DSCTO"
@@ -441,6 +404,10 @@ with tab_compras:
         st.error("No se encontró Compras Retail-Ecomm-BTS.")
 
 st.divider()
+
+# =========================================
+# 4. EJECUTAR
+# =========================================
 
 st.subheader("4. Ejecutar cálculo")
 
