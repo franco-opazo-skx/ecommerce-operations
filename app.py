@@ -27,113 +27,162 @@ st.markdown("""
 footer {visibility: hidden;}
 
 .block-container{
-    padding-top: 1.3rem;
+    padding-top: 1rem;
     padding-left: 2rem;
     padding-right: 2rem;
-    max-width: 1280px;
+    max-width: 1260px;
 }
 
 [data-testid="stSidebar"]{
-    background: #071527;
+    background: #061426;
 }
 
 [data-testid="stSidebar"] *{
     color: white;
 }
 
+.sidebar-logo{
+    text-align:center;
+    margin-top:35px;
+    margin-bottom:55px;
+}
+
+.sidebar-section{
+    background:#082B3A;
+    border-radius:12px;
+    padding:14px;
+    font-weight:700;
+    margin-bottom:36px;
+}
+
 .hero{
-    background: linear-gradient(90deg, #071527 0%, #0B2B4C 100%);
-    border-radius: 18px;
-    padding: 24px 30px;
-    margin-bottom: 22px;
-    color: white;
+    background: linear-gradient(90deg, #061426 0%, #0B2B4C 100%);
+    border-radius:18px;
+    padding:22px 26px;
+    margin-bottom:18px;
+    color:white;
+    display:flex;
+    align-items:center;
+    gap:24px;
+}
+
+.hero img{
+    width:190px;
+    max-height:70px;
+    object-fit:contain;
 }
 
 .hero-title{
-    font-size: 32px;
-    font-weight: 850;
-    margin-bottom: 4px;
+    font-size:30px;
+    font-weight:850;
+    margin-bottom:4px;
 }
 
 .hero-sub{
-    font-size: 14px;
-    color: #D1D5DB;
+    font-size:13px;
+    color:#CBD5E1;
 }
 
 .metric-card{
-    background: #FFFFFF;
-    border: 1px solid #E5E7EB;
-    border-radius: 14px;
-    padding: 15px 18px;
-    box-shadow: 0 1px 6px rgba(15,23,42,0.05);
+    background:#FFFFFF;
+    border:1px solid #E5E7EB;
+    border-radius:14px;
+    padding:13px 16px;
+    box-shadow:0 1px 5px rgba(15,23,42,0.05);
 }
 
 .metric-title{
-    font-size: 12px;
-    color: #64748B;
-    text-transform: uppercase;
-    font-weight: 700;
+    font-size:11px;
+    color:#64748B;
+    text-transform:uppercase;
+    font-weight:800;
+    letter-spacing:.04em;
 }
 
 .metric-value{
-    font-size: 23px;
-    color: #071527;
-    font-weight: 800;
+    font-size:21px;
+    color:#061426;
+    font-weight:850;
 }
 
 .card-section{
-    background: #FFFFFF;
-    border: 1px solid #E5E7EB;
-    border-radius: 16px;
-    padding: 22px;
-    margin-bottom: 22px;
-    box-shadow: 0 2px 8px rgba(15,23,42,0.04);
+    background:#FFFFFF;
+    border:1px solid #E5E7EB;
+    border-radius:15px;
+    padding:18px 20px;
+    margin-bottom:18px;
+    box-shadow:0 1px 6px rgba(15,23,42,0.04);
 }
 
 .section-label{
-    font-size: 12px;
-    color: #64748B;
-    text-transform: uppercase;
-    font-weight: 800;
-    letter-spacing: .04em;
+    font-size:11px;
+    color:#64748B;
+    text-transform:uppercase;
+    font-weight:850;
+    letter-spacing:.05em;
+    margin-bottom:4px;
 }
 
 .section-heading{
-    font-size: 22px;
-    font-weight: 850;
-    color: #071527;
-    margin-bottom: 6px;
+    font-size:21px;
+    font-weight:850;
+    color:#061426;
+    margin-bottom:4px;
 }
 
 .executive-note{
-    color: #64748B;
-    font-size: 14px;
-    margin-bottom: 14px;
+    color:#64748B;
+    font-size:13px;
+}
+
+.rule-row{
+    background:#F8FAFC;
+    border:1px solid #E5E7EB;
+    border-radius:12px;
+    padding:10px 14px;
+    margin-bottom:8px;
+}
+
+.rule-title{
+    font-size:15px;
+    font-weight:750;
+    color:#061426;
 }
 
 .stButton>button{
-    background-color: #0B2B4C;
-    color: white;
-    border-radius: 10px;
-    border: none;
-    font-weight: 700;
+    background-color:#0B2B4C;
+    color:white;
+    border-radius:10px;
+    border:none;
+    font-weight:750;
+    padding:8px 16px;
 }
 
 .stButton>button:hover{
-    background-color: #123E6B;
-    color: white;
+    background-color:#123E6B;
+    color:white;
 }
 
 div[data-testid="stDownloadButton"] button{
-    background-color: #071527;
-    color: white;
-    border-radius: 10px;
-    border: none;
-    font-weight: 700;
+    background-color:#061426;
+    color:white;
+    border-radius:10px;
+    border:none;
+    font-weight:750;
+}
+
+[data-testid="stFileUploader"]{
+    background:#F8FAFC;
+    border-radius:12px;
 }
 
 h1, h2, h3{
-    color: #071527;
+    color:#061426;
+}
+
+hr{
+    margin-top:20px;
+    margin-bottom:20px;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -162,6 +211,7 @@ def load_tech_options(path):
     detalles = sorted([v for v in df["Detalle"].unique() if v and v != "-"])
     apto_df = df[df["Detalle"].str.upper() == "APTO PARA DSCTO"]
     seasons_apto = sorted([v for v in apto_df["Season Actual"].unique() if v and v != "-"])
+
     return detalles, seasons_apto
 
 
@@ -194,26 +244,40 @@ def load_compras_options(path):
 
 
 with st.sidebar:
+    st.markdown("<div class='sidebar-logo'>", unsafe_allow_html=True)
     if LOGO_PATH.exists():
         st.image(str(LOGO_PATH), use_container_width=True)
     else:
         st.markdown("## SKECHERS")
+    st.markdown("</div>", unsafe_allow_html=True)
 
     st.caption("Ecommerce Operations")
-    st.divider()
-    st.success("Cálculo Descuentos Ecommerce")
-    st.divider()
+    st.markdown("<div class='sidebar-section'>Cálculo Descuentos Ecommerce</div>", unsafe_allow_html=True)
     st.caption("From: Franco Opazo")
 
 
-st.markdown("""
-<div class="hero">
-    <div class="hero-title">SKECHERS · Ecommerce Operations</div>
-    <div class="hero-sub">Motor corporativo para cálculo de descuentos ecommerce · From Franco Opazo</div>
-</div>
-""", unsafe_allow_html=True)
+if LOGO_PATH.exists():
+    st.markdown("<div class='hero'>", unsafe_allow_html=True)
+    c_logo, c_text = st.columns([1.1, 4])
+    with c_logo:
+        st.image(str(LOGO_PATH), use_container_width=True)
+    with c_text:
+        st.markdown("""
+        <div class="hero-title">Ecommerce Operations</div>
+        <div class="hero-sub">Motor corporativo para cálculo de descuentos ecommerce · From Franco Opazo</div>
+        """, unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
+else:
+    st.markdown("""
+    <div class="hero">
+        <div>
+            <div class="hero-title">SKECHERS · Ecommerce Operations</div>
+            <div class="hero-sub">Motor corporativo para cálculo de descuentos ecommerce · From Franco Opazo</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4 = st.columns(4)
 
 with col1:
     st.markdown("""
@@ -239,18 +303,27 @@ with col3:
     </div>
     """, unsafe_allow_html=True)
 
-st.divider()
+with col4:
+    archivos_ok = sum(1 for p in FILES.values() if p.exists())
+    st.markdown(f"""
+    <div class="metric-card">
+        <div class="metric-title">Archivos base</div>
+        <div class="metric-value">{archivos_ok}/5 OK</div>
+    </div>
+    """, unsafe_allow_html=True)
 
-with st.expander("Estado de conexión archivos internos", expanded=False):
+with st.expander("Ver estado técnico de archivos internos", expanded=False):
     for name, path in FILES.items():
         if path.exists():
             st.success(f"{name}: OK")
         else:
             st.error(f"{name}: No encontrado → {path}")
 
+st.markdown("<hr>", unsafe_allow_html=True)
+
 st.markdown("""
 <div class="card-section">
-    <div class="section-label">Paso 1</div>
+    <div class="section-label">Input principal</div>
     <div class="section-heading">Carga de archivo Style-Color</div>
     <div class="executive-note">Sube el archivo base con los Style-Color que serán evaluados por el motor.</div>
 </div>
@@ -262,15 +335,16 @@ df_style = None
 if archivo:
     df_style = pd.read_excel(archivo)
     st.success(f"Archivo cargado: {archivo.name}")
-    st.dataframe(df_style.head(20), use_container_width=True)
     st.info(f"Filas encontradas: {len(df_style)}")
+    with st.expander("Ver vista previa del archivo cargado", expanded=False):
+        st.dataframe(df_style.head(20), use_container_width=True)
 
-st.divider()
+st.markdown("<hr>", unsafe_allow_html=True)
 
 st.markdown("""
 <div class="card-section">
-    <div class="section-label">Paso 2</div>
-    <div class="section-heading">Prioridad de reglas</div>
+    <div class="section-label">Reglas de negocio</div>
+    <div class="section-heading">Prioridad de evaluación</div>
     <div class="executive-note">La primera regla que aplique define el resultado final del producto.</div>
 </div>
 """, unsafe_allow_html=True)
@@ -288,7 +362,12 @@ if "prioridades" not in st.session_state:
 
 for i, regla in enumerate(st.session_state.prioridades):
     c1, c2, c3 = st.columns([8, 1, 1])
-    c1.markdown(f"**{i + 1}. {regla}**")
+    with c1:
+        st.markdown(f"""
+        <div class="rule-row">
+            <div class="rule-title">{i + 1}. {regla}</div>
+        </div>
+        """, unsafe_allow_html=True)
 
     if c2.button("⬆️", key=f"up_{i}", disabled=i == 0):
         st.session_state.prioridades[i - 1], st.session_state.prioridades[i] = (
@@ -308,12 +387,12 @@ if st.button("Restablecer orden"):
     st.session_state.prioridades = reglas_base.copy()
     st.rerun()
 
-st.divider()
+st.markdown("<hr>", unsafe_allow_html=True)
 
 st.markdown("""
 <div class="card-section">
-    <div class="section-label">Paso 3</div>
-    <div class="section-heading">Configuración dinámica de reglas</div>
+    <div class="section-label">Parámetros dinámicos</div>
+    <div class="section-heading">Configuración de descuentos</div>
     <div class="executive-note">Define qué valores permiten descuento y el porcentaje correspondiente.</div>
 </div>
 """, unsafe_allow_html=True)
@@ -362,7 +441,7 @@ with tab_tech:
             apto_permite = bool(apto_row.iloc[0]["Permite descuento"])
 
         if apto_permite:
-            st.markdown("##### % por Season para APTO PARA DSCTO")
+            st.markdown("##### Porcentaje por Season para APTO PARA DSCTO")
             df_season = pd.DataFrame({
                 "Season Actual": seasons_apto,
                 "%": [0.0] * len(seasons_apto),
@@ -373,7 +452,7 @@ with tab_tech:
                 key="config_tech_season",
             )
         else:
-            st.info("Activa 'Permite descuento' en APTO PARA DSCTO para configurar % por Season.")
+            st.info("Activa 'Permite descuento' en APTO PARA DSCTO para configurar porcentaje por Season.")
             config_tech_season = pd.DataFrame(columns=["Season Actual", "%"])
     else:
         st.error("No se encontró Tech Sports.")
@@ -394,13 +473,13 @@ with tab_compras:
     else:
         st.error("No se encontró Compras Retail-Ecomm-BTS.")
 
-st.divider()
+st.markdown("<hr>", unsafe_allow_html=True)
 
 st.markdown("""
 <div class="card-section">
-    <div class="section-label">Paso 4</div>
-    <div class="section-heading">Ejecutar y descargar output</div>
-    <div class="executive-note">Procesa las reglas configuradas y descarga el archivo final en Excel.</div>
+    <div class="section-label">Resultado</div>
+    <div class="section-heading">Ejecutar cálculo y descargar output</div>
+    <div class="executive-note">Procesa las reglas configuradas y descarga el archivo final en formato Excel.</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -422,11 +501,18 @@ if st.button("Ejecutar cálculo", type="primary"):
 
                 excel_bytes = dataframe_to_excel_bytes(output_df)
 
-            st.success("✅ Cálculo terminado correctamente.")
-            st.dataframe(output_df.head(50), use_container_width=True)
+            st.success("Cálculo terminado correctamente.")
+
+            c1, c2, c3 = st.columns(3)
+            c1.metric("Productos procesados", len(output_df))
+            c2.metric("Habilitados", int((output_df["Habilitado/No Habilitado"] == "Habilitado para tener Descuento").sum()))
+            c3.metric("No habilitados", int((output_df["Habilitado/No Habilitado"] != "Habilitado para tener Descuento").sum()))
+
+            with st.expander("Ver vista previa del output", expanded=True):
+                st.dataframe(output_df.head(50), use_container_width=True)
 
             st.download_button(
-                label="📥 Descargar output_descuentos_ecommerce.xlsx",
+                label="Descargar output_descuentos_ecommerce.xlsx",
                 data=excel_bytes,
                 file_name="output_descuentos_ecommerce.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
