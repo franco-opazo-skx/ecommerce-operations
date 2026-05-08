@@ -4,16 +4,14 @@ from pathlib import Path
 
 st.set_page_config(page_title="Descuentos Ecommerce", page_icon="🔥", layout="wide")
 
-BASE_DIR = Path.home() / "Skechers USA" / "Macarena Caballero Gonzalez - Team Ecommerce"
-MOD_DIR = BASE_DIR / "Python" / "mod_descuentos_ecommerce"
-DISPONIBLE_PATH = BASE_DIR / "Stock Files" / "Disponible.xlsx"
+DATA_DIR = Path("data")
 
 FILES = {
-    "Listado Prod. 1P": MOD_DIR / "Listado Prod. 1P.xlsx",
-    "Descuentos Retail": MOD_DIR / "Descuentos Retail.xlsx",
-    "Tech Sports": MOD_DIR / "Tech Sports.xlsx",
-    "Compras Retail-Ecomm-BTS": MOD_DIR / "Compras Retail-Ecomm-BTS.xlsx",
-    "Disponible": DISPONIBLE_PATH,
+    "Listado Prod. 1P": DATA_DIR / "Listado Prod. 1P.xlsx",
+    "Descuentos Retail": DATA_DIR / "Descuentos Retail.xlsx",
+    "Tech Sports": DATA_DIR / "Tech Sports.xlsx",
+    "Compras Retail-Ecomm-BTS": DATA_DIR / "Compras Retail-Ecomm-BTS.xlsx",
+    "Disponible": DATA_DIR / "Disponible.xlsx",
 }
 
 def norm(v):
@@ -26,8 +24,7 @@ def load_1p_options(path):
     vals = set()
     for col in df.columns:
         vals.update(df[col].dropna().astype(str).str.strip())
-    vals = sorted([v for v in vals if v and v != "-"])
-    return vals
+    return sorted([v for v in vals if v and v != "-"])
 
 def load_tech_options(path):
     df = pd.read_excel(path, header=0, usecols="A,I,K")
@@ -61,14 +58,11 @@ def load_compras_options(path):
 
     encontrados = []
     for grupo, cols in grupos.items():
-        existe = False
         for c in cols:
             serie = df[c].fillna("-").astype(str).str.strip()
             if (serie != "-").any():
-                existe = True
+                encontrados.append(grupo)
                 break
-        if existe:
-            encontrados.append(grupo)
 
     return encontrados
 
@@ -90,13 +84,12 @@ col3.metric("Output", "Excel")
 
 st.divider()
 
-st.subheader("Archivos internos detectados")
-
-for name, path in FILES.items():
-    if path.exists():
-        st.success(f"{name}: OK")
-    else:
-        st.error(f"{name}: No encontrado")
+with st.expander("Estado de conexión archivos internos", expanded=False):
+    for name, path in FILES.items():
+        if path.exists():
+            st.success(f"{name}: OK")
+        else:
+            st.error(f"{name}: No encontrado → {path}")
 
 st.divider()
 
