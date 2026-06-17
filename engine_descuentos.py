@@ -23,6 +23,24 @@ COMPRA_GROUPS = [
 ]
 
 
+def _excel_input(obj):
+    """
+    Permite leer correctamente:
+    - archivos subidos en Streamlit
+    - rutas de GitHub/data
+    - BytesIO
+    """
+    if hasattr(obj, "seek"):
+        obj.seek(0)
+    if hasattr(obj, "getvalue"):
+        return BytesIO(obj.getvalue())
+    return obj
+
+
+def _read_excel(obj, **kwargs):
+    return pd.read_excel(_excel_input(obj), engine="openpyxl", **kwargs)
+
+
 def _norm_sc(x) -> str:
     if x is None or pd.isna(x):
         return ""
@@ -106,13 +124,13 @@ def _season_config_from_editor(df):
 
 
 def load_style_colors(uploaded_file):
-    df = pd.read_excel(uploaded_file, header=0, usecols=[0])
+    df = _read_excel(uploaded_file, header=0, usecols=[0])
     vals = [_norm_sc(v) for v in df.iloc[:, 0].tolist()]
     return [v for v in vals if v]
 
 
 def load_1p(path):
-    df = pd.read_excel(path, header=0, usecols="A,D,E,F,G,H")
+    df = _read_excel(path, header=0, usecols="A,D,E,F,G,H")
     df.columns = ["Style-Color", "Falabella", "Meli", "Paris", "Ripley", "Ecommerce"]
     df["Style-Color"] = df["Style-Color"].map(_norm_sc)
 
@@ -123,11 +141,7 @@ def load_1p(path):
 
 
 def load_techsports(path):
-    # A = SKECHERS / Style-Color
-    # G = STYLE NAME
-    # I = SEASON ACTUAL
-    # K = DETALLE PARA DSCTO
-    df = pd.read_excel(path, header=0, usecols="A,G,I,K")
+    df = _read_excel(path, header=0, usecols="A,G,I,K")
     df.columns = ["Style-Color", "Style Name", "SEASON_ACTUAL", "Detalle"]
 
     df["Style-Color"] = df["Style-Color"].map(_norm_sc)
@@ -139,7 +153,7 @@ def load_techsports(path):
 
 
 def load_compra(path):
-    df = pd.read_excel(path, header=0, usecols="B,M,N,O,P,Q,R,S,T,U,V,W,X,Y")
+    df = _read_excel(path, header=0, usecols="B,M,N,O,P,Q,R,S,T,U,V,W,X,Y")
     df.columns = ["Style-Color", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y"]
     df["Style-Color"] = df["Style-Color"].map(_norm_sc)
 
@@ -148,15 +162,15 @@ def load_compra(path):
 
 def load_retail(path):
     lookup = {}
-    xl = pd.ExcelFile(path)
+    xl = pd.ExcelFile(_excel_input(path), engine="openpyxl")
 
     pares_sheet = "PARES" if "PARES" in xl.sheet_names else xl.sheet_names[0]
     acc_sheet = "ACC" if "ACC" in xl.sheet_names else xl.sheet_names[min(1, len(xl.sheet_names) - 1)]
 
-    df_pares = pd.read_excel(path, sheet_name=pares_sheet, header=0, usecols="C,I")
+    df_pares = _read_excel(path, sheet_name=pares_sheet, header=0, usecols="C,I")
     df_pares.columns = ["StyleColor", "Descuento"]
 
-    df_acc = pd.read_excel(path, sheet_name=acc_sheet, header=0, usecols="C,G")
+    df_acc = _read_excel(path, sheet_name=acc_sheet, header=0, usecols="C,G")
     df_acc.columns = ["StyleColor", "Descuento"]
 
     for df in [df_pares, df_acc]:
@@ -178,11 +192,7 @@ def load_retail(path):
 
 
 def load_disponible(path):
-    # Disponible.xlsx / hoja ALL
-    # A = SKECHERS
-    # AH = QTY
-    # AI = Q
-    raw = pd.read_excel(path, sheet_name="ALL", header=None)
+    raw = _read_excel(path, sheet_name="ALL", header=None)
 
     key_pos = 0
     qty_pos = 33
